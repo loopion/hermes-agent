@@ -66,7 +66,7 @@ fi
 case "${1}" in
     gateway)
         echo "[hermes] Démarrage du gateway..."
-        exec hermes gateway start
+        exec hermes gateway run
         ;;
     setup)
         echo "[hermes] Mode setup interactif..."
