@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # System dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        git curl ca-certificates bash && \
+        git curl ca-certificates bash xz-utils && \
     rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
