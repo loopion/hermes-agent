@@ -1,0 +1,45 @@
+services:
+  hermes:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hermes-agent:latest
+    container_name: hermes-agent
+    restart: unless-stopped
+
+    # ── Variables injectées depuis Coolify (ne jamais hardcoder ici) ──────
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CUSTOM_BASE_URL=${CUSTOM_BASE_URL}
+      - MODEL_DEFAULT=${MODEL_DEFAULT:-free-dev}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+
+    # ── Volume persistant pour mémoire, skills, sessions, config ─────────
+    volumes:
+      - hermes-data:/home/hermes/.hermes
+
+    # ── Commande par défaut : gateway (Telegram) ──────────────────────────
+    command: gateway
+
+    # ── Pas de port exposé — Hermes contacte Telegram en outbound only ────
+    # ports: []  # décommenter si tu ajoutes un dashboard web
+
+    # ── Limites ressources (recommandé sur VPS partagé) ───────────────────
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          memory: 128M
+
+    # ── Logs compacts ─────────────────────────────────────────────────────
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  hermes-data:
+    driver: local
